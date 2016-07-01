@@ -1,5 +1,11 @@
+bin/
+bin64/
 vs.proj/Debug
 vs.proj/Release
 vs.proj/x64
 vs.proj/NppPluginDemo.opensdf
 vs.proj/NppPluginDemo.sdf
+*.suo
+*.sln
+vs.proj/NppPluginDemo.exp
+vs.proj/NppPluginDemo.lib
