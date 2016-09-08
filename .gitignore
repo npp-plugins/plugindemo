@@ -9,3 +9,6 @@ vs.proj/NppPluginDemo.sdf
 *.sln
 vs.proj/NppPluginDemo.exp
 vs.proj/NppPluginDemo.lib
+*.aps
+vs.proj/NppPluginDemo.vcxproj.user
+*.zip
