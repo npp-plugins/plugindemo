@@ -1,0 +1,54 @@
+version: 3.1.{build}
+image: Visual Studio 2015
+
+
+clone_depth: 1
+
+
+environment:
+  matrix:
+  - PlatformToolset: v140_xp
+  - PlatformToolset: v120_xp
+
+platform:
+    - x64
+    - Win32
+
+configuration:
+    - Release
+    - Debug
+
+install:
+    - if "%platform%"=="x64" set archi=amd64
+    - if "%platform%"=="Win32" set archi=x86
+    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
+
+build:
+    parallel: true                  # enable MSBuild parallel builds
+    verbosity: minimal
+
+build_script:
+    - cd c:\projects\plugindemo\vs.proj\
+    - msbuild NppPluginDemo.vcxproj /p:configuration="%configuration%" /p:platform="%platform%" /p:PlatformToolset="%PlatformToolset%"
+
+after_build:
+    - cd c:\projects\plugindemo\
+    - ps: >-
+        $plugindemoFileName = "NppPluginDemo.$env:PLATFORM.$env:CONFIGURATION.$env:PLATFORMTOOLSET.dll"
+
+        if ($env:PLATFORM -eq "x64" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin64\NppPluginDemo.dll" -FileName "$plugindemoFileName"
+        }
+
+        if ($env:PLATFORM -eq "x64" -and $env:CONFIGURATION -eq "Debug") {
+            Push-AppveyorArtifact "vs.proj\x64\Debug\NppPluginDemo.dll" -FileName "$plugindemoFileName"
+        }
+
+        if ($env:PLATFORM -eq "Win32" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin\NppPluginDemo.dll" -FileName "$plugindemoFileName"
+        }
+
+        if ($env:PLATFORM -eq "Win32" -and $env:CONFIGURATION -eq "Debug") {
+            Push-AppveyorArtifact "vs.proj\Debug\NppPluginDemo.dll" -FileName "$plugindemoFileName"
+        }
+
