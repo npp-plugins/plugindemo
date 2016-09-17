@@ -1,14 +1,10 @@
 version: 3.1.{build}
-image: Visual Studio 2015
-
-
-clone_depth: 1
+image: Visual Studio 2017
 
 
 environment:
   matrix:
-  - PlatformToolset: v140_xp
-  - PlatformToolset: v120_xp
+  - PlatformToolset: v141_xp
 
 platform:
     - x64
@@ -20,35 +16,58 @@ configuration:
 
 install:
     - if "%platform%"=="x64" set archi=amd64
-    - if "%platform%"=="Win32" set archi=x86
-    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
+    - if "%platform%"=="x64" set platform_input=x64
 
-build:
-    parallel: true                  # enable MSBuild parallel builds
-    verbosity: minimal
+    - if "%platform%"=="Win32" set archi=x86
+    - if "%platform%"=="Win32" set platform_input=Win32
+
+    - if "%PlatformToolset%"=="v141_xp" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
+    - if "%PlatformToolset%"=="v142" call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
 
 build_script:
-    - cd c:\projects\plugindemo\vs.proj\
-    - msbuild NppPluginDemo.vcxproj /p:configuration="%configuration%" /p:platform="%platform%" /p:PlatformToolset="%PlatformToolset%"
+    - cd "%APPVEYOR_BUILD_FOLDER%"/vs.proj
+    - msbuild NppPluginDemo.vcxproj /m /p:configuration="%configuration%" /p:platform="%platform_input%" /p:PlatformToolset="%PlatformToolset%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 after_build:
-    - cd c:\projects\plugindemo\
+    - cd "%APPVEYOR_BUILD_FOLDER%"
     - ps: >-
-        $plugindemoFileName = "NppPluginDemo.$env:PLATFORM.$env:CONFIGURATION.$env:PLATFORMTOOLSET.dll"
 
-        if ($env:PLATFORM -eq "x64" -and $env:CONFIGURATION -eq "Release") {
-            Push-AppveyorArtifact "bin64\NppPluginDemo.dll" -FileName "$plugindemoFileName"
+        if ($env:PLATFORM_INPUT -eq "x64" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin64\NppPluginDemo.dll" -FileName NppPluginDemo.dll
         }
 
-        if ($env:PLATFORM -eq "x64" -and $env:CONFIGURATION -eq "Debug") {
-            Push-AppveyorArtifact "vs.proj\x64\Debug\NppPluginDemo.dll" -FileName "$plugindemoFileName"
+        if ($env:PLATFORM_INPUT -eq "Win32" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin\NppPluginDemo.dll" -FileName NppPluginDemo.dll
         }
 
-        if ($env:PLATFORM -eq "Win32" -and $env:CONFIGURATION -eq "Release") {
-            Push-AppveyorArtifact "bin\NppPluginDemo.dll" -FileName "$plugindemoFileName"
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v141_xp") {
+            if($env:PLATFORM_INPUT -eq "x64"){
+                $ZipFileName = "NppPluginDemo_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
+                Remove-Item bin64\*.ipdb
+                Remove-Item bin64\*.iobj
+                7z a $ZipFileName "$($env:APPVEYOR_BUILD_FOLDER)\bin64\*"
+            }
+            if($env:PLATFORM_INPUT -eq "Win32"){
+                $ZipFileName = "NppPluginDemo_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
+                Remove-Item bin\*.ipdb
+                Remove-Item bin\*.iobj
+                7z a $ZipFileName "$($env:APPVEYOR_BUILD_FOLDER)\bin\*"
+            }
         }
 
-        if ($env:PLATFORM -eq "Win32" -and $env:CONFIGURATION -eq "Debug") {
-            Push-AppveyorArtifact "vs.proj\Debug\NppPluginDemo.dll" -FileName "$plugindemoFileName"
-        }
+artifacts:
+  - path: NppPluginDemo_*.zip
+    name: releases
 
+deploy:
+    provider: GitHub
+    auth_token:
+        secure: !!TODO, see https://www.appveyor.com/docs/deployment/github/#provider-settings!!
+    artifact: releases
+    draft: false
+    prerelease: false
+    force_update: true
+    on:
+        appveyor_repo_tag: true
+        PlatformToolset: v141_xp
+        configuration: Release
