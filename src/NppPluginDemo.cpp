@@ -97,7 +97,7 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 
 					if (size >= 3) 
 					{
-						struct TextRange tr = {{startPos, currentPos}, buf};
+						struct Sci_TextRange tr = {{startPos, currentPos}, buf};
 
 						::SendMessage(hCurrentEditView, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
 

@@ -2,7 +2,9 @@ bin/
 bin64/
 vs.proj/Debug
 vs.proj/Release
+vs.proj/.vs
 vs.proj/x64
+vs.proj/ARM64
 vs.proj/NppPluginDemo.opensdf
 vs.proj/NppPluginDemo.sdf
 *.suo
