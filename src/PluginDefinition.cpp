@@ -363,7 +363,7 @@ void insertDateTime(bool format)
 void insertHtmlCloseTag()
 {
 	doCloseTag = !doCloseTag;
-	::CheckMenuItem(::GetMenu(nppData._nppHandle), funcItem[5]._cmdID, MF_BYCOMMAND | (doCloseTag?MF_CHECKED:MF_UNCHECKED));
+	::CheckMenuItem(::GetMenu(nppData._nppHandle), funcItem[9]._cmdID, MF_BYCOMMAND | (doCloseTag?MF_CHECKED:MF_UNCHECKED));
 }
 
 void getFileNamesDemo()
