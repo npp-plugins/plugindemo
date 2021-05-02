@@ -18,6 +18,7 @@
 #include "PluginDefinition.h"
 #include <shlwapi.h>
 #include "DockingFeature/GoToLineDlg.h"
+#include "resource.h"
 
 extern FuncItem funcItem[nbFunc];
 extern NppData nppData;
@@ -73,6 +74,16 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 {
 	switch (notifyCode->nmhdr.code) 
 	{
+
+		case NPPN_TBMODIFICATION:
+		{
+			toolbarIcons tbIcons;
+			tbIcons.hToolbarBmp = ::LoadBitmap(_goToLine.getHinst(), MAKEINTRESOURCE(IDR_ZOOMOUT));
+			tbIcons.hToolbarIcon = ::LoadIcon(_goToLine.getHinst(), MAKEINTRESOURCE(IDI_CLOSE_OFF_ICON));
+			::SendMessage(nppData._nppHandle, NPPM_ADDTOOLBARICON, funcItem[1]._cmdID, (LPARAM)&tbIcons);
+		}
+		break;
+
 		case NPPN_SHUTDOWN:
 		{
 			commandMenuCleanUp();
