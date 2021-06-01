@@ -25,6 +25,7 @@ extern NppData nppData;
 extern bool doCloseTag;
 
 extern DemoDlg _goToLine;
+HINSTANCE g_inst;
 
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD  reasonForCall, LPVOID /*lpReserved*/)
 {
@@ -33,6 +34,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD  reasonForCall, LPVOID /*lpReserved*
 		{
 			case DLL_PROCESS_ATTACH:
 				pluginInit(hModule);
+				g_inst = HINSTANCE(hModule);
 				break;
 
 			case DLL_PROCESS_DETACH:
@@ -77,10 +79,11 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 
 		case NPPN_TBMODIFICATION:
 		{
-			toolbarIcons tbIcons;
-			tbIcons.hToolbarBmp = ::LoadBitmap(_goToLine.getHinst(), MAKEINTRESOURCE(IDR_ZOOMOUT));
-			tbIcons.hToolbarIcon = ::LoadIcon(_goToLine.getHinst(), MAKEINTRESOURCE(IDI_CLOSE_OFF_ICON));
-			::SendMessage(nppData._nppHandle, NPPM_ADDTOOLBARICON, funcItem[1]._cmdID, (LPARAM)&tbIcons);
+			toolbarIconsWithDarkMode tbIcons;
+			tbIcons.hToolbarBmp = ::LoadBitmap(g_inst, MAKEINTRESOURCE(IDR_SMILEY_BMP));
+			tbIcons.hToolbarIcon = ::LoadIcon(g_inst, MAKEINTRESOURCE(IDI_SMILEY_ICON));
+			tbIcons.hToolbarIconDarkMode = ::LoadIcon(g_inst, MAKEINTRESOURCE(IDI_SMILEY_DM_ICON));
+			::SendMessage(nppData._nppHandle, NPPM_ADDTOOLBARICON_FORDARKMODE, funcItem[1]._cmdID, (LPARAM)&tbIcons);
 		}
 		break;
 

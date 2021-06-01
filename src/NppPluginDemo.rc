@@ -52,5 +52,6 @@ BEGIN
 	END
 END
 
-IDI_CLOSE_OFF_ICON              ICON      "resource/supp_off.ico"
-IDR_ZOOMOUT                     BITMAP    "resource/zoomOut.bmp"
+IDI_SMILEY_ICON              ICON      "resource/smiley.ico"
+IDI_SMILEY_DM_ICON           ICON      "resource/smileyDM.ico"
+IDR_SMILEY_BMP               BITMAP    "resource/smiley.bmp"

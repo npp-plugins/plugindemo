@@ -1,2 +1,3 @@
-#define IDR_ZOOMOUT            100
-#define IDI_CLOSE_OFF_ICON     101
+#define IDR_SMILEY_BMP         100
+#define IDI_SMILEY_ICON        101
+#define IDI_SMILEY_DM_ICON     102
