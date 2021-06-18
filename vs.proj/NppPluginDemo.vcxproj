@@ -279,8 +279,8 @@ copy ..\readme.FIRST ..\bin64\readme.FIRST</Command>
       <ImportLibrary>$(TargetName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\license.txt ..\bin64\license.txt
-copy ..\readme.FIRST ..\bin64\readme.FIRST</Command>
+      <Command>copy ..\license.txt ..\arm64\license.txt
+copy ..\readme.FIRST ..\arm64\readme.FIRST</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
