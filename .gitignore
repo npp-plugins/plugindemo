@@ -15,3 +15,4 @@ vs.proj/NppPluginDemo.lib
 *.aps
 vs.proj/NppPluginDemo.vcxproj.user
 *.zip
+*.bak
