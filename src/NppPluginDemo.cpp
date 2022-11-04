@@ -1,5 +1,5 @@
 //this file is part of notepad++
-//Copyright (C)2003 Don HO <donho@altern.org>
+//Copyright (C)2022 Don HO <don.h@free.fr>
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -114,9 +114,9 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 
 					if (size >= 3) 
 					{
-						struct Sci_TextRange tr = {{startPos, currentPos}, buf};
+						struct Sci_TextRangeFull tr = {{startPos, currentPos}, buf};
 
-						::SendMessage(hCurrentEditView, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+						::SendMessage(hCurrentEditView, SCI_GETTEXTRANGEFULL, 0, (LPARAM)&tr);
 
 						if (buf[size-2] != '/') 
 						{
