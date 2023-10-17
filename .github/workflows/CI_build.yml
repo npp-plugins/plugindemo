@@ -13,7 +13,7 @@ jobs:
         
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1
@@ -22,23 +22,54 @@ jobs:
       working-directory: vs.proj\
       run: msbuild NppPluginDemo.vcxproj /m /p:configuration="${{ matrix.build_configuration }}" /p:platform="${{ matrix.build_platform }}"
 
+    - uses: olegtarasov/get-tag@v2.1.2
+      id: tagName
+
+    - name: zip artifacts for x64
+      if: matrix.build_platform == 'x64' && matrix.build_configuration == 'Release'
+      run: |
+           Remove-Item bin64\*.ipdb
+           Remove-Item bin64\*.iobj
+           7z a pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip .\bin64\*
+
     - name: Archive artifacts for x64
       if: matrix.build_platform == 'x64' && matrix.build_configuration == 'Release'
       uses: actions/upload-artifact@v3
       with:
-          name: plugin_dll_x64
-          path: bin64\NppPluginDemo.dll
+          name: pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip
+          path: pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip
+
+    - name: zip artifacts for Win32
+      if: matrix.build_platform == 'Win32' && matrix.build_configuration == 'Release'
+      run: |
+           Remove-Item bin\*.ipdb
+           Remove-Item bin\*.iobj
+           7z a pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip .\bin\*
 
     - name: Archive artifacts for Win32
       if: matrix.build_platform == 'Win32' && matrix.build_configuration == 'Release'
       uses: actions/upload-artifact@v3
       with:
-          name: plugin_dll_x86
-          path: bin\NppPluginDemo.dll
+          name: pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip
+          path: pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip
+
+    - name: zip artifacts for ARM64
+      if: matrix.build_platform == 'ARM64' && matrix.build_configuration == 'Release'
+      run: |
+           Remove-Item arm64\*.ipdb
+           Remove-Item arm64\*.iobj
+           7z a pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip .\arm64\*
 
     - name: Archive artifacts for ARM64
       if: matrix.build_platform == 'ARM64' && matrix.build_configuration == 'Release'
       uses: actions/upload-artifact@v3
       with:
-          name: plugin_dll_arm64
-          path: arm64\NppPluginDemo.dll
+          name: pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip
+          path: pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip
+
+    - name: Create release on tagging
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: pluginDemo_${{ steps.tagName.outputs.tag }}_${{ matrix.build_platform }}.zip
+
