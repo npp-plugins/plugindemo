@@ -141,6 +141,11 @@ void commandMenuInit()
 	setCommand(14, TEXT("---"), NULL, NULL, false);
 
 	setCommand(DOCKABLE_DEMO_INDEX, TEXT("Dockable Dialog Demo"), DockableDlgDemo, NULL, false);
+
+	setCommand(16, TEXT("---"), NULL, NULL, false);
+
+	setCommand(17, TEXT("Plugin Communication Guide"), goToPluginCommunicationGuide, NULL, false);
+	setCommand(18, TEXT("Get Plugin Demo Source Code"), goToPluginDemoRepo, NULL, false);
 }
 
 
@@ -307,6 +312,8 @@ void insertCurrentPath(int which)
 #endif
 }
 
+
+
 void insertCurrentFullPath()
 {
 	insertCurrentPath(FULL_CURRENT_PATH);
@@ -458,3 +465,12 @@ void DockableDlgDemo()
 	_goToLine.display();
 }
 
+void goToPluginCommunicationGuide()
+{
+	::ShellExecute(NULL, TEXT("open"), TEXT("https://npp-user-manual.org/docs/plugin-communication/"), NULL, NULL, SW_SHOWNORMAL);
+}
+
+void goToPluginDemoRepo()
+{
+	::ShellExecute(NULL, TEXT("open"), TEXT("https://github.com/npp-plugins/plugindemo"), NULL, NULL, SW_SHOWNORMAL);
+}
