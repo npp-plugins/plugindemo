@@ -80,7 +80,7 @@ void StaticDialog::display(bool toShow, bool enhancedPositioningCheckWhenShowing
 
 			if ((testPositionRc.left != candidateRc.left) || (testPositionRc.top != candidateRc.top))
 			{
-				::MoveWindow(_hSelf, candidateRc.left, candidateRc.top, 
+				::MoveWindow(_hSelf, candidateRc.left, candidateRc.top,
 					candidateRc.right - candidateRc.left, candidateRc.bottom - candidateRc.top, TRUE);
 			}
 		}
@@ -128,7 +128,7 @@ RECT StaticDialog::getViewablePositionRect(RECT testPositionRc) const
 		// rect would be at least partially visible on a monitor
 
 		::GetMonitorInfo(hMon, &mi);
-		
+
 		int margin = ::GetSystemMetrics(SM_CYBORDER) + ::GetSystemMetrics(SM_CYSIZEFRAME) + ::GetSystemMetrics(SM_CYCAPTION);
 
 		// require that the title bar of the window be in a viewable place so the user can see it to grab it with the mouse
@@ -153,7 +153,7 @@ RECT StaticDialog::getViewablePositionRect(RECT testPositionRc) const
 	if (!rectPosViewableWithoutChange)
 	{
 		// reposition rect so that it would be viewable on current/nearest monitor, centering if reasonable
-		
+
 		LONG testRectWidth = testPositionRc.right - testPositionRc.left;
 		LONG testRectHeight = testPositionRc.bottom - testPositionRc.top;
 		LONG monWidth = mi.rcWork.right - mi.rcWork.left;
@@ -204,7 +204,7 @@ HGLOBAL StaticDialog::makeRTLResource(int dialogID, DLGTEMPLATE **ppMyDlgTemplat
 
 std::wstring GetLastErrorAsString(DWORD errorCode)
 {
-	std::wstring errorMsg(_T(""));
+	std::wstring errorMsg(L"");
 	// Get the error message, if any.
 	// If both error codes (passed error n GetLastError) are 0, then return empty
 	if (errorCode == 0)
