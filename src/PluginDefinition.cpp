@@ -385,7 +385,7 @@ void getFileNamesDemo()
 		fileNames[i] = new TCHAR[MAX_PATH];
 	}
 
-	if (::SendMessage(nppData._nppHandle, NPPM_GETOPENFILENAMES, (WPARAM)fileNames, (LPARAM)nbFile))
+	if (::SendMessage(nppData._nppHandle, NPPM_GETOPENFILENAMES_DEPRECATED, (WPARAM)fileNames, (LPARAM)nbFile))
 	{
 		for (int i = 0 ; i < nbFile ; i++)
 		::MessageBox(nppData._nppHandle, fileNames[i], TEXT(""), MB_OK);
