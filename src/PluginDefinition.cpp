@@ -26,9 +26,9 @@
 #include <shlwapi.h>
 #include "DockingFeature/GoToLineDlg.h"
 
-const TCHAR sectionName[] = TEXT("Insert Extesion");
-const TCHAR keyName[] = TEXT("doCloseTag");
-const TCHAR configFileName[] = TEXT("pluginDemo.ini");
+const wchar_t sectionName[] = L"Insert Extesion";
+const wchar_t keyName[] = L"doCloseTag";
+const wchar_t configFileName[] = L"pluginDemo.ini";
 
 DemoDlg _goToLine;
 
@@ -46,7 +46,7 @@ FuncItem funcItem[nbFunc];
 NppData nppData;
 
 
-TCHAR iniFilePath[MAX_PATH];
+wchar_t iniFilePath[MAX_PATH];
 bool doCloseTag = false;
 
 #define DOCKABLE_DEMO_INDEX 15
@@ -65,7 +65,7 @@ void pluginInit(HANDLE hModule)
 //
 void pluginCleanUp()
 {
-	::WritePrivateProfileString(sectionName, keyName, doCloseTag?TEXT("1"):TEXT("0"), iniFilePath);
+	::WritePrivateProfileString(sectionName, keyName, doCloseTag ? L"1" : L"0", iniFilePath);
 }
 
 //
@@ -98,17 +98,17 @@ void commandMenuInit()
     //--------------------------------------------//
     // with function :
     // setCommand(int index,                      // zero based number to indicate the order of command
-    //            TCHAR *commandName,             // the command name that you want to see in plugin menu
+    //            wchar_t *commandName,             // the command name that you want to see in plugin menu
     //            PFUNCPLUGINCMD functionPointer, // the symbol of function (function pointer) associated with this command. The body should be defined below. See Step 4.
     //            ShortcutKey *shortcut,          // optional. Define a shortcut to trigger this command
     //            bool check0nInit                // optional. Make this menu item be checked visually
     //            );
-    setCommand(0, TEXT("Hello Notepad++"), hello, NULL, false);
-    setCommand(1, TEXT("Hello (with FX)"), helloFX, NULL, false);
-	setCommand(2, TEXT("What is Notepad++?"), WhatIsNpp, NULL, false);
+    setCommand(0, L"Hello Notepad++", hello, NULL, false);
+    setCommand(1, L"Hello (with FX)", helloFX, NULL, false);
+	setCommand(2, L"What is Notepad++?", WhatIsNpp, NULL, false);
 
 	// Here you insert a separator
-	setCommand(3, TEXT("---"), NULL, NULL, false);
+	setCommand(3, L"---", NULL, NULL, false);
 
 	// Shortcut :
 	// Following code makes the first command
@@ -119,33 +119,33 @@ void commandMenuInit()
 	shKey->_isShift = false;
 	shKey->_key = 0x46; //VK_F
 
-	setCommand(4, TEXT("Current Full Path"), insertCurrentFullPath, shKey, false);
-	setCommand(5, TEXT("Current File Name"), insertCurrentFileName, NULL, false);
-	setCommand(6, TEXT("Current Directory"), insertCurrentDirectory, NULL, false);
-	setCommand(7, TEXT("Date & Time - short format"), insertShortDateTime, NULL, false);
-	setCommand(8, TEXT("Date & Time - long format"), insertLongDateTime, NULL, false);
+	setCommand(4, L"Current Full Path", insertCurrentFullPath, shKey, false);
+	setCommand(5, L"Current File Name", insertCurrentFileName, NULL, false);
+	setCommand(6, L"Current Directory", insertCurrentDirectory, NULL, false);
+	setCommand(7, L"Date & Time - short format", insertShortDateTime, NULL, false);
+	setCommand(8, L"Date & Time - long format", insertLongDateTime, NULL, false);
 
 	ShortcutKey *pShKey = new ShortcutKey;
 	pShKey->_isAlt = true;
 	pShKey->_isCtrl = false;
 	pShKey->_isShift = false;
 	pShKey->_key = 0x51; //VK_Q
-	setCommand(9, TEXT("Close HTML/XML tag automatically"), insertHtmlCloseTag, pShKey, doCloseTag);
+	setCommand(9, L"Close HTML/XML tag automatically", insertHtmlCloseTag, pShKey, doCloseTag);
 	
-	setCommand(10, TEXT("---"), NULL, NULL, false);
+	setCommand(10, L"---", NULL, NULL, false);
 
-	setCommand(11, TEXT("Get File Names Demo"), getFileNamesDemo, NULL, false);
-	setCommand(12, TEXT("Get Session File Names Demo"), getSessionFileNamesDemo, NULL, false);
-	setCommand(13, TEXT("Save Current Session Demo"), saveCurrentSessionDemo, NULL, false);
+	setCommand(11, L"Get File Names Demo", getFileNamesDemo, NULL, false);
+	setCommand(12, L"Get Session File Names Demo", getSessionFileNamesDemo, NULL, false);
+	setCommand(13, L"Save Current Session Demo", saveCurrentSessionDemo, NULL, false);
 
-	setCommand(14, TEXT("---"), NULL, NULL, false);
+	setCommand(14, L"---", NULL, NULL, false);
 
-	setCommand(DOCKABLE_DEMO_INDEX, TEXT("Dockable Dialog Demo"), DockableDlgDemo, NULL, false);
+	setCommand(DOCKABLE_DEMO_INDEX, L"Dockable Dialog Demo", DockableDlgDemo, NULL, false);
 
-	setCommand(16, TEXT("---"), NULL, NULL, false);
+	setCommand(16, L"---", NULL, NULL, false);
 
-	setCommand(17, TEXT("Plugin Communication Guide"), goToPluginCommunicationGuide, NULL, false);
-	setCommand(18, TEXT("Get Plugin Demo Source Code"), goToPluginDemoRepo, NULL, false);
+	setCommand(17, L"Plugin Communication Guide", goToPluginCommunicationGuide, NULL, false);
+	setCommand(18, L"Get Plugin Demo Source Code", goToPluginDemoRepo, NULL, false);
 }
 
 
@@ -228,7 +228,7 @@ void helloFX()
 //
 // This function help you to initialize your plugin commands
 //
-bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey *sk, bool check0nInit) 
+bool setCommand(size_t index, wchar_t *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey *sk, bool check0nInit) 
 {
     if (index >= nbFunc)
         return false;
@@ -294,7 +294,7 @@ void insertCurrentPath(int which)
 		msg = NPPM_GETCURRENTDIRECTORY;
 
 	int currentEdit;
-	TCHAR path[MAX_PATH];
+	wchar_t path[MAX_PATH];
 	
 	// A message to Notepad++ to get a multibyte string (if ANSI mode) or a wide char string (if Unicode mode)
 	::SendMessage(nppData._nppHandle, msg, 0, (LPARAM)path);
@@ -342,29 +342,25 @@ void insertLongDateTime()
 
 void insertDateTime(bool format)
 {
-	TCHAR date[128];
-    TCHAR time[128];
-    TCHAR dateTime[256];
+	wchar_t date[128];
+    wchar_t time[128];
+    wchar_t dateTime[256];
 
     SYSTEMTIME st;
 	::GetLocalTime(&st);
 	::GetDateFormat(LOCALE_USER_DEFAULT, (format == shortDate)?DATE_SHORTDATE:DATE_LONGDATE, &st, NULL, date, 128);
 	::GetTimeFormat(LOCALE_USER_DEFAULT, TIME_NOSECONDS, &st, NULL, time, 128);
 
-    wsprintf(dateTime, TEXT("%s %s"), time, date);
+    wsprintf(dateTime, L"%s %s", time, date);
 
 	int currentEdit;
 	::SendMessage(nppData._nppHandle, NPPM_GETCURRENTSCINTILLA, 0, (LPARAM)&currentEdit);
 	HWND curScint = (currentEdit == 0)?nppData._scintillaMainHandle:nppData._scintillaSecondHandle;
-#ifdef UNICODE
+
 	int encoding = (int)::SendMessage(curScint, SCI_GETCODEPAGE, 0, 0);
 	char dateTimeA[MAX_PATH];
 	WideCharToMultiByte(encoding, 0, dateTime, -1, dateTimeA, MAX_PATH, NULL, NULL);
 	::SendMessage(curScint, SCI_REPLACESEL, 0, (LPARAM)dateTimeA);
-#else
-	::SendMessage(curScint, SCI_REPLACESEL, 0, (LPARAM)dateTime);
-#endif
-
 }
 
 void insertHtmlCloseTag()
@@ -375,52 +371,67 @@ void insertHtmlCloseTag()
 
 void getFileNamesDemo()
 {
-	int nbFile = (int)::SendMessage(nppData._nppHandle, NPPM_GETNBOPENFILES, 0, 0);
-	TCHAR toto[10];
-	::MessageBox(nppData._nppHandle, generic_itoa(nbFile, toto, 10), TEXT("nb opened files"), MB_OK);
+	int nbMainViewFile = (int)::SendMessage(nppData._nppHandle, NPPM_GETNBOPENFILES, 0, PRIMARY_VIEW);
+	int nbSubViewFile = (int)::SendMessage(nppData._nppHandle, NPPM_GETNBOPENFILES, 0, SECOND_VIEW);
+	int nbFile = nbMainViewFile + nbSubViewFile;
+	wchar_t toto[10];
+	::MessageBox(nppData._nppHandle, generic_itoa(nbFile, toto, 10), L"nb opened files", MB_OK);
 	
-	TCHAR **fileNames = (TCHAR **)new TCHAR*[nbFile];
-	for (int i = 0 ; i < nbFile ; i++)
+	wchar_t **fileNames = (wchar_t **)new wchar_t*[nbFile];
+
+	int i = 0;
+	for (; i < nbMainViewFile; )
 	{
-		fileNames[i] = new TCHAR[MAX_PATH];
+		LRESULT bufferId = ::SendMessage(nppData._nppHandle, NPPM_GETBUFFERIDFROMPOS, i, MAIN_VIEW);
+		LRESULT len = ::SendMessage(nppData._nppHandle, NPPM_GETFULLPATHFROMBUFFERID, bufferId, (WPARAM)nullptr);
+		fileNames[i] = new wchar_t[len + 1];
+		::SendMessage(nppData._nppHandle, NPPM_GETFULLPATHFROMBUFFERID, bufferId, (WPARAM)fileNames[i]);
+		++i;
 	}
 
-	if (::SendMessage(nppData._nppHandle, NPPM_GETOPENFILENAMES, (WPARAM)fileNames, (LPARAM)nbFile))
+	
+	for (int j = 0; j < nbSubViewFile; ++j)
 	{
-		for (int i = 0 ; i < nbFile ; i++)
-		::MessageBox(nppData._nppHandle, fileNames[i], TEXT(""), MB_OK);
+		LRESULT bufferId = ::SendMessage(nppData._nppHandle, NPPM_GETBUFFERIDFROMPOS, j, SUB_VIEW);
+		LRESULT len = ::SendMessage(nppData._nppHandle, NPPM_GETFULLPATHFROMBUFFERID, bufferId, (WPARAM)nullptr);
+		fileNames[i] = new wchar_t[len + 1];
+		::SendMessage(nppData._nppHandle, NPPM_GETFULLPATHFROMBUFFERID, bufferId, (WPARAM)fileNames[i]);
+		++i;
 	}
 
-	for (int i = 0 ; i < nbFile ; i++)
+	for (int k = 0 ; k < nbFile ; k++)
+		::MessageBox(nppData._nppHandle, fileNames[k], L"", MB_OK);
+
+	for (int k = 0 ; k < nbFile ; k++)
 	{
-		delete [] fileNames[i];
+		delete [] fileNames[k];
 	}
 	delete [] fileNames;
 }
 
 void getSessionFileNamesDemo()
 {
-	const TCHAR *sessionFullPath = TEXT("c:\\test.session");
+	const wchar_t *sessionFullPath = L"c:\\test.session";
 	int nbFile = (int)::SendMessage(nppData._nppHandle, NPPM_GETNBSESSIONFILES, 0, (LPARAM)sessionFullPath);
 
 	if (!nbFile)
 	{
-		::MessageBox(nppData._nppHandle, TEXT("Please modify \"sessionFullPath\" in \"NppInsertPlugin.cpp\" in order to point to a valide session file"), TEXT("Error :"), MB_OK);
+		::MessageBox(nppData._nppHandle, L"Please modify \"sessionFullPath\" in \"NppInsertPlugin.cpp\" in order to point to a valide session file", L"Error :", MB_OK);
 		return;
 	}
-	TCHAR toto[10];
-	::MessageBox(nppData._nppHandle, generic_itoa(nbFile, toto, 10), TEXT("nb session files"), MB_OK);
+	wchar_t toto[10];
+	::MessageBox(nppData._nppHandle, generic_itoa(nbFile, toto, 10), L"nb session files", MB_OK);
 	
-	TCHAR **fileNames = (TCHAR **)new TCHAR*[nbFile];
+	wchar_t **fileNames = (wchar_t **)new wchar_t*[nbFile];
 	for (int i = 0 ; i < nbFile ; i++)
 	{
-		fileNames[i] = new TCHAR[MAX_PATH];
+		fileNames[i] = new wchar_t[MAX_PATH];
 	}
 
 	if (::SendMessage(nppData._nppHandle, NPPM_GETSESSIONFILES, (WPARAM)fileNames, (LPARAM)sessionFullPath))
 	{
 		for (int i = 0 ; i < nbFile ; i++)
-			::MessageBox(nppData._nppHandle, fileNames[i], TEXT("session file name :"), MB_OK);
+			::MessageBox(nppData._nppHandle, fileNames[i], L"session file name :", MB_OK);
 	}
 
 	for (int i = 0 ; i < nbFile ; i++)
@@ -432,9 +443,9 @@ void getSessionFileNamesDemo()
 
 void saveCurrentSessionDemo()
 {
-	TCHAR *sessionPath = (TCHAR *)::SendMessage(nppData._nppHandle, NPPM_SAVECURRENTSESSION, 0, 0);
+	wchar_t *sessionPath = (wchar_t *)::SendMessage(nppData._nppHandle, NPPM_SAVECURRENTSESSION, 0, 0);
 	if (sessionPath)
-		::MessageBox(nppData._nppHandle, sessionPath, TEXT("Saved Session File :"), MB_OK);
+		::MessageBox(nppData._nppHandle, sessionPath, L"Saved Session File :", MB_OK);
 }
 
 // Dockable Dialog Demo
@@ -467,10 +478,10 @@ void DockableDlgDemo()
 
 void goToPluginCommunicationGuide()
 {
-	::ShellExecute(NULL, TEXT("open"), TEXT("https://npp-user-manual.org/docs/plugin-communication/"), NULL, NULL, SW_SHOWNORMAL);
+	::ShellExecute(NULL, L"open", L"https://npp-user-manual.org/docs/plugin-communication/", NULL, NULL, SW_SHOWNORMAL);
 }
 
 void goToPluginDemoRepo()
 {
-	::ShellExecute(NULL, TEXT("open"), TEXT("https://github.com/npp-plugins/plugindemo"), NULL, NULL, SW_SHOWNORMAL);
+	::ShellExecute(NULL, L"open", L"https://github.com/npp-plugins/plugindemo", NULL, NULL, SW_SHOWNORMAL);
 }

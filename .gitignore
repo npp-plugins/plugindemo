@@ -8,6 +8,7 @@ vs.proj/x64
 vs.proj/ARM64
 vs.proj/NppPluginDemo.opensdf
 vs.proj/NppPluginDemo.sdf
+vs.proj/NppPluginDemo/
 *.suo
 *.sln
 vs.proj/NppPluginDemo.exp
