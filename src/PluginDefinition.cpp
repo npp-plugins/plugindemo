@@ -49,7 +49,7 @@ NppData nppData;
 wchar_t iniFilePath[MAX_PATH];
 bool doCloseTag = false;
 
-#define DOCKABLE_DEMO_INDEX 15
+#define DOCKABLE_DEMO_INDEX 16
 
 //
 // Initialize your plugin data here
@@ -137,15 +137,16 @@ void commandMenuInit()
 	setCommand(11, L"Get File Names Demo", getFileNamesDemo, NULL, false);
 	setCommand(12, L"Get Session File Names Demo", getSessionFileNamesDemo, NULL, false);
 	setCommand(13, L"Save Current Session Demo", saveCurrentSessionDemo, NULL, false);
+	setCommand(14, L"Get Command Shortcut Demo", getCommandShortcutDemo, NULL, false);
 
-	setCommand(14, L"---", NULL, NULL, false);
+	setCommand(15, L"---", NULL, NULL, false);
 
 	setCommand(DOCKABLE_DEMO_INDEX, L"Dockable Dialog Demo", DockableDlgDemo, NULL, false);
 
-	setCommand(16, L"---", NULL, NULL, false);
+	setCommand(17, L"---", NULL, NULL, false);
 
-	setCommand(17, L"Plugin Communication Guide", goToPluginCommunicationGuide, NULL, false);
-	setCommand(18, L"Get Plugin Demo Source Code", goToPluginDemoRepo, NULL, false);
+	setCommand(18, L"Plugin Communication Guide", goToPluginCommunicationGuide, NULL, false);
+	setCommand(19, L"Get Plugin Demo Source Code", goToPluginDemoRepo, NULL, false);
 }
 
 
@@ -446,6 +447,27 @@ void saveCurrentSessionDemo()
 	wchar_t *sessionPath = (wchar_t *)::SendMessage(nppData._nppHandle, NPPM_SAVECURRENTSESSION, 0, 0);
 	if (sessionPath)
 		::MessageBox(nppData._nppHandle, sessionPath, L"Saved Session File :", MB_OK);
+}
+
+void getCommandShortcutDemo()
+{
+	ShortcutKey sk;
+
+	// Grt shortcut of current full file path shortcut
+	::SendMessage(nppData._nppHandle, NPPM_GETSHORTCUTBYCMDID, funcItem[4]._cmdID, reinterpret_cast<LPARAM>(&sk));
+
+	std::string msg;
+	msg = "KEY: ";
+	msg += static_cast<char>(sk._key);
+	msg += " Crtl: ";
+	msg += sk._isCtrl ? "Yes" : "No";
+	msg += " Alt: ";
+	msg += sk._isAlt ? "Yes" : "No";
+	msg += " Shift: ";
+	msg += sk._isShift ? "Yes" : "No";
+
+
+	::MessageBoxA(nppData._nppHandle, msg.c_str(), "Shorcut", MB_OK);
 }
 
 // Dockable Dialog Demo

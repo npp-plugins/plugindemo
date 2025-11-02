@@ -84,6 +84,7 @@ void insertHtmlCloseTag();
 void getFileNamesDemo();
 void getSessionFileNamesDemo();
 void saveCurrentSessionDemo();
+void getCommandShortcutDemo();
 void DockableDlgDemo();
 void goToPluginCommunicationGuide();
 void goToPluginDemoRepo();
